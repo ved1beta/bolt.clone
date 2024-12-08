@@ -1,5 +1,5 @@
 # Bolt Clone (V0 Clone Project) FAILED
-
+![Bolt Clone Interface](image.png)
 ## Project Overview
 This project was an attempt to create a clone of V0 (v0.dev), a generative user interface tool by Vercel. The goal was to create a system that could generate complete applications using AI, similar to how V0 generates UI components.
 
