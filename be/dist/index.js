@@ -19,28 +19,38 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("dotenv").config();
 console.log(process.env.GEMINI_API_KEY);
 const generative_ai_1 = require("@google/generative-ai");
+const prompts_1 = require("./prompts");
 const genAI = new generative_ai_1.GoogleGenerativeAI("AIzaSyCMJN_HqVPaHUEKeR_FfKxNwXhHcKXf-oE");
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         var _a, e_1, _b, _c;
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-        const prompt = "hoo to write my first reach app";
-        const result = yield model.generateContentStream(prompt);
+        // Combine system prompt with user prompt
+        const systemPrompt = (0, prompts_1.getSystemPrompt)();
+        const userPrompt = "create a todo app in react";
+        const fullPrompt = `${systemPrompt}\n\nUser Request: ${userPrompt}`;
         try {
-            for (var _d = true, _e = __asyncValues(result.stream), _f; _f = yield _e.next(), _a = _f.done, !_a; _d = true) {
-                _c = _f.value;
-                _d = false;
-                const chunk = _c;
-                process.stdout.write(chunk.text());
+            const result = yield model.generateContentStream(fullPrompt);
+            process.stdout.write("Generating response...\n\n");
+            try {
+                for (var _d = true, _e = __asyncValues(result.stream), _f; _f = yield _e.next(), _a = _f.done, !_a; _d = true) {
+                    _c = _f.value;
+                    _d = false;
+                    const chunk = _c;
+                    process.stdout.write(chunk.text());
+                }
+            }
+            catch (e_1_1) { e_1 = { error: e_1_1 }; }
+            finally {
+                try {
+                    if (!_d && !_a && (_b = _e.return)) yield _b.call(_e);
+                }
+                finally { if (e_1) throw e_1.error; }
             }
         }
-        catch (e_1_1) { e_1 = { error: e_1_1 }; }
-        finally {
-            try {
-                if (!_d && !_a && (_b = _e.return)) yield _b.call(_e);
-            }
-            finally { if (e_1) throw e_1.error; }
+        catch (error) {
+            console.error("Error generating content:", error);
         }
     });
 }
-main();
+main().catch(console.error);
